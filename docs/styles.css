@@ -77,7 +77,7 @@ dl.kv dd { margin: 0; word-break: break-word; }
 .note { background: var(--bg2); border-radius: 10px; padding: 8px 10px; font-size: 14px; margin: 10px 0; }
 .note.warn, p.warn { border-left: 4px solid var(--yellow); background: var(--bg2); padding: 8px 10px; border-radius: 6px; }
 .row { display: flex; gap: 8px; flex-wrap: wrap; }
-.btn, .row button, #sheet-body button.btn { border: 1px solid var(--line); background: var(--bg2); border-radius: 10px; padding: 9px 14px; }
+.btn, .row button { border: 1px solid var(--line); background: var(--bg2); border-radius: 10px; padding: 9px 14px; }
 button.primary, .btn.primary { background: var(--accent); color: var(--accent-fg); border-color: transparent; font-weight: 600; }
 button.danger { color: var(--red); }
 button.wide { width: 100%; padding: 13px; border-radius: 12px; border: 0; font-size: 16px; }
