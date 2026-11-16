@@ -1,0 +1,15 @@
+{
+ "built": "2026-11-15",
+ "count": 21681,
+ "classes": {
+  "other_public": 742,
+  "private": 19574,
+  "public_state": 495,
+  "review:public_federal": 87,
+  "unknown": 259,
+  "tribal": 302,
+  "public_federal": 309,
+  "review:public_state": 82,
+  "review:private": 90
+ }
+}

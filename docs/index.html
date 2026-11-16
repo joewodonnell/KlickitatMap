@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <title>Klickitat Parcels</title>
+  <meta name="description" content="Offline Klickitat County parcel map with live public/private land status.">
+  <meta name="theme-color" content="#1f3d2b">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Parcels">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="vendor/maplibre-gl.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="map"></div>
+
+  <div id="banner" class="gray" role="status" aria-live="polite">
+    <span class="dot"></span>
+    <div class="text">
+      <div id="banner-title">Loading parcels…</div>
+      <div id="banner-sub"></div>
+    </div>
+  </div>
+
+  <div class="fab-col top">
+    <button class="fab" id="btn-search" aria-label="Search">
+      <svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></svg>
+    </button>
+    <button class="fab" id="btn-layers" aria-label="Layers and offline">
+      <svg viewBox="0 0 24 24"><path d="M12 3 2 8l10 5 10-5-10-5Z"/><path d="m2 13 10 5 10-5"/><path d="m2 17.5 10 5 10-5"/></svg>
+    </button>
+    <button class="fab" id="btn-allowed" aria-label="Allowed parcels">
+      <svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>
+    </button>
+    <button class="fab" id="btn-about" aria-label="About and settings">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6"/><circle cx="12" cy="7.5" r=".6" fill="currentColor"/></svg>
+    </button>
+  </div>
+
+  <div class="fab-col bottom">
+    <button class="fab" id="btn-measure" aria-label="Measure">
+      <svg viewBox="0 0 24 24"><path d="M3 17 17 3l4 4L7 21l-4-4Z"/><path d="m7 13 2 2m1-5 2 2m1-5 2 2"/></svg>
+    </button>
+    <button class="fab big" id="btn-locate" aria-label="Center on my location">
+      <svg viewBox="0 0 24 24"><path d="M12 2v3m0 14v3M2 12h3m14 0h3"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2" fill="currentColor"/></svg>
+    </button>
+  </div>
+
+  <div id="measure-bar" hidden>
+    <div id="measure-text">Tap the map to add points</div>
+    <div class="row">
+      <button id="measure-undo">Undo</button>
+      <button id="measure-clear">Clear</button>
+      <button id="measure-done" class="primary">Done</button>
+    </div>
+  </div>
+
+  <div id="sheet" hidden>
+    <div class="sheet-head">
+      <div id="sheet-title"></div>
+      <button id="sheet-close" aria-label="Close">
+        <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+    </div>
+    <div id="sheet-body"></div>
+  </div>
+
+  <div id="intro" hidden>
+    <div class="card">
+      <h1>Klickitat Parcels</h1>
+      <p>Shows Klickitat County parcels and where you are, colored by land status:</p>
+      <ul class="legend-list">
+        <li><span class="dot green"></span>Public land, or a parcel you marked Allowed</li>
+        <li><span class="dot yellow"></span>Within 50 ft (plus GPS error) of an off-limits boundary</li>
+        <li><span class="dot red"></span>Inside private or other off-limits land</li>
+        <li><span class="dot gray"></span>Unknown: weak GPS or unclassified parcel</li>
+      </ul>
+      <p class="warn"><strong>Navigation aid only.</strong> County parcel lines are not surveys and can be off by 20–100+ ft; phone GPS adds its own error. Posted signs, fences, and survey markers take precedence.</p>
+      <p class="small">Alerts only work while the app is open on screen. iPhone doesn't let web apps track you with the screen off.</p>
+      <button id="intro-start" class="primary wide">I understand — start</button>
+    </div>
+  </div>
+
+  <div id="toast" hidden></div>
+
+  <script src="vendor/maplibre-gl.js"></script>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
