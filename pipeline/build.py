@@ -69,6 +69,13 @@ def main():
                if clean_geometry(f["geometry"])]
     padus = [f for f in json.loads((RAW / "padus.geojson").read_text(encoding="utf-8"))["features"]
              if f["geometry"] and f["properties"]["Own_Type"] in ("FED", "STAT")]
+    meta_path = APP_DATA / "meta.json"
+    if meta_path.exists():
+        previous = json.loads(meta_path.read_text(encoding="utf-8"))["count"]
+        if len(parcels) < 0.9 * previous:
+            raise SystemExit(f"Only {len(parcels)} parcels downloaded (last build had {previous}); refusing to publish.")
+    if not padus:
+        raise SystemExit("No PAD-US public lands downloaded; refusing to publish.")
     pad_geoms = [shape(f["geometry"]).buffer(0) for f in padus]
     tree = STRtree(pad_geoms)
 
@@ -122,7 +129,8 @@ def main():
     (APP_DATA / "meta.json").write_text(json.dumps(meta, indent=1), encoding="utf-8")
 
     with open(OUT / "review.csv", "w", newline="", encoding="utf-8") as f:
-        w = csv.DictWriter(f, fieldnames=["parcel_num", "owner", "address", "rule_class", "padus_owner", "padus_unit", "reason"])
+        w = csv.DictWriter(f, fieldnames=["parcel_num", "owner", "address", "rule_class", "padus_owner", "padus_unit", "reason"],
+                           lineterminator="\n")
         w.writeheader()
         w.writerows(review)
 

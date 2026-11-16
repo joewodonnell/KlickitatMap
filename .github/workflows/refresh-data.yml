@@ -1,0 +1,82 @@
+name: Refresh parcel data
+
+on:
+  schedule:
+    - cron: "17 11 1 * *" # 1st of every month, ~3-4am Pacific
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Publish even if the parcel data didn't change"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  pages: write
+
+concurrency:
+  group: refresh-data
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r pipeline/requirements.txt
+
+      - name: Download county parcels and PAD-US
+        run: python pipeline/fetch.py
+
+      - name: Classify and build app data
+        run: python pipeline/build.py
+
+      - name: Detect changes
+        id: diff
+        run: |
+          if git diff --quiet -- docs/data/parcels.json docs/data/county.json && [ "${{ inputs.force }}" != "true" ]; then
+            changed=false
+            git checkout -- docs/data/meta.json pipeline/out/review.csv
+          else
+            changed=true
+            sed -i "s/^const VERSION = '.*';/const VERSION = 'data-$(date -u +%Y-%m-%d-%H%M)';/" docs/sw.js
+          fi
+          echo "changed=$changed" >> "$GITHUB_OUTPUT"
+          echo "$(date -u '+%Y-%m-%d %H:%M UTC') checked; parcel data changed: $changed" > pipeline/out/last_checked.txt
+          git status --short
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/data docs/sw.js pipeline/out
+          if [ "${{ steps.diff.outputs.changed }}" = "true" ]; then
+            git commit -m "Refresh parcel data from Klickitat County ($(date -u +%Y-%m-%d))"
+          else
+            git commit -m "Check parcel data: no changes ($(date -u +%Y-%m-%d))"
+          fi
+          git push
+
+      - name: Rebuild GitHub Pages
+        if: steps.diff.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api -X POST "repos/${{ github.repository }}/pages/builds"
+
+      - name: Summary
+        run: |
+          {
+            echo "### Parcel data refresh"
+            echo "Published new data: **${{ steps.diff.outputs.changed }}**"
+            echo '```'
+            cat docs/data/meta.json
+            echo '```'
+            echo "Parcels flagged for review: $(($(wc -l < pipeline/out/review.csv) - 1))"
+          } >> "$GITHUB_STEP_SUMMARY"

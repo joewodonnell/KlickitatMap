@@ -1,6 +1,6 @@
 # Klickitat Parcel Map — iOS App Plan
 
-> **Status (2026-11-15):** Built as a free web app (PWA) instead of a native iOS app, to avoid the Apple developer fee. The app is in `docs/` (served by GitHub Pages); the data pipeline is in `pipeline/` (`python fetch.py && python build.py`). Everything below works except screen-off background tracking, which iPhone web apps can't do.
+> **Status (2026-11-15):** Built as a free web app (PWA) instead of a native iOS app, to avoid the Apple developer fee. The app is in `docs/` (served by GitHub Pages); the data pipeline is in `pipeline/` (`python fetch.py && python build.py`). A GitHub Action (`.github/workflows/refresh-data.yml`) re-runs the pipeline on the 1st of each month and republishes only if the parcels changed; run it by hand from the repo's Actions tab. Everything below works except screen-off background tracking, which iPhone web apps can't do.
 
 ## The problem
 The [Klickitat County interactive parcel map](https://imap.klickitatcounty.gov) shows parcel boundaries and who owns each parcel. It does **not** show where you are. When you're out on public land trying to stay off private property, you have to keep switching between the parcel map and Google Maps.
