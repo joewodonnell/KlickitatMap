@@ -570,6 +570,7 @@ function showLayers() {
     refreshStorage();
   };
   clearBtn.onclick = async () => {
+    if (!confirm('Delete all downloaded maps? You’ll need a connection to download them again. Parcel data and your Allowed list are not affected.')) return;
     await caches.delete(TILE_CACHE);
     toast('Downloaded maps deleted');
     refreshStorage();

@@ -1,5 +1,5 @@
 // Bump VERSION whenever app files or data change so phones pick up the update.
-const VERSION = '2026-11-15.2';
+const VERSION = '2026-11-15.3';
 const SHELL = `shell-${VERSION}`;
 const TILES = 'tiles-v1';
 const ASSETS = [
